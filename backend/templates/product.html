@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Product Checker</title>
+
+  <style>
+    button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+small {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #555;
+}
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 40px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+    }
+
+    .card {
+      margin: 80px auto;
+      background: white;
+      padding: 30px;
+      width: 400px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      width: 80%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #ff4d6d;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #d6336c;
+    }
+
+    .safe { color: green; }
+    .scam { color: red; }
+    .warn { color: orange; }
+  </style>
+</head>
+
+<body>
+
+<nav>
+  <h3>TrustGuard</h3>
+  <div>
+    <a href="/">Home</a>
+    <a href="/website">Website</a>
+    <a href="/product">Product</a>
+  </div>
+</nav>
+
+<div class="card">
+  <h2>🛒 Product Checker</h2>
+
+  <input id="name" placeholder="Product Name">
+  <input id="price" placeholder="Price">
+  <input id="url" placeholder="Product URL">
+
+  <button onclick="checkProduct()">Check Product</button>
+
+  <h3 id="result"></h3>
+</div>
+
+<script>
+async function checkProduct() {
+  const name = document.getElementById("name").value;
+  const price = document.getElementById("price").value;
+  const url = document.getElementById("url").value;
+
+  const resultDiv = document.getElementById("result");
+  const btn = document.querySelector("button");
+
+  resultDiv.innerText = "Checking...";
+  btn.disabled = true;
+
+  try {
+    const res = await fetch("/product_check", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ name, price, url })
+    });
+
+    const data = await res.json();
+
+    resultDiv.innerText = data.result;
+
+    if (data.result.includes("Fake")) {
+      resultDiv.className = "scam";
+    } else if (data.result.includes("Genuine")) {
+      resultDiv.className = "safe";
+    } else {
+      resultDiv.className = "warn";
+    }
+
+  } catch (err) {
+    resultDiv.innerText = "Server error ⚠️";
+    resultDiv.className = "warn";
+  }
+
+  btn.disabled = false;
+}
+</script>
+
+</body>
+</html>

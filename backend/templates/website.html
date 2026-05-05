@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Website Checker</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 40px;
+      background: rgba(0,0,0,0.3);
+      color: white;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+    }
+
+    .card {
+      margin: 80px auto;
+      background: white;
+      padding: 30px;
+      width: 400px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      width: 80%;
+    }
+
+    .safe { color: green; }
+    .scam { color: red; }
+  </style>
+</head>
+
+<body>
+
+<nav>
+  <h3>TrustGuard</h3>
+  <div>
+    <a href="/">Home</a>
+    <a href="/website">Website</a>
+    <a href="/product">Product</a>
+  </div>
+</nav>
+
+<div class="card">
+  <h2>🔍 Website Checker</h2>
+
+  <input id="urlInput" placeholder="Enter URL">
+  <button onclick="checkWebsite()">Check</button>
+
+  <h3 id="result"></h3>
+</div>
+
+<script>
+async function checkWebsite() {
+  const url = document.getElementById("urlInput").value;
+
+  const res = await fetch("/predict", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ url })
+  });
+
+  const data = await res.json();
+  document.getElementById("result").innerText = data.result;
+}
+</script>
+
+</body>
+</html>
