@@ -114,7 +114,8 @@ async function checkProduct() {
 
     const data = await res.json();
 
-    resultDiv.innerText = data.result;
+    resultDiv.innerHTML = `<b>${data.result}</b><br>` +
+    (data.reasons ? data.reasons.join("<br>") : "");
 
     if (data.result.includes("Fake")) {
       resultDiv.className = "scam";
